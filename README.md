@@ -28,17 +28,17 @@ npm install
 npm run dev
 ```
 
-Open:
+Open (default from `serve`):
 
 ```text
 http://localhost:3000
 ```
 
-## Config
+## API Base
 
-- `PORT` (default: 3000)
-- `ROUND_DURATION_MIN` (default: 30)
-- `FLAT_THRESHOLD_PCT` (default: 0.2)
+This is now a static front-end. Configure the API host by setting
+`window.MINTBOOK_API_BASE` in `public/index.html`. Leave it empty for
+same-origin or reverse-proxy setups.
 
 ## Docs
 

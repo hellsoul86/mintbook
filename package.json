@@ -3,11 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
+    "dev": "serve public",
+    "start": "serve public"
   },
-  "dependencies": {
-    "@fastify/static": "^7.0.4",
-    "fastify": "^4.28.1"
+  "devDependencies": {
+    "serve": "^14.2.0"
   }
 }

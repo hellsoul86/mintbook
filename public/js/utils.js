@@ -1,7 +1,22 @@
-export const directionLabel = (dir) => {
-  if (dir === 'UP') return '涨';
-  if (dir === 'DOWN') return '跌';
-  return '平';
+export const directionWord = (dir) => {
+  if (dir === 'UP') return '上涨';
+  if (dir === 'DOWN') return '下跌';
+  return '横盘';
+};
+
+export const judgmentLabel = (agentId, direction) => {
+  const word = directionWord(direction);
+  if (agentId === 'bull_v1') return `断言${word}`;
+  if (agentId === 'bear_v1') return `宣判${word}`;
+  if (agentId === 'chaos_v1') return `强行站队${word}`;
+  return `立场${word}`;
+};
+
+export const statusLabel = (status) => {
+  if (status === 'locked') return '锁死';
+  if (status === 'betting') return '封盘';
+  if (status === 'settled') return '结案';
+  return status || '--';
 };
 
 export const formatPrice = (price) => {

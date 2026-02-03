@@ -59,6 +59,13 @@ body::after {
   padding: 32px 20px 70px;
 }
 
+.motto {
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+
 .hero {
   display: flex;
   flex-wrap: wrap;
@@ -269,6 +276,10 @@ main {
   margin-top: 6px;
 }
 
+.tile .hint:empty {
+  display: none;
+}
+
 .judgment-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -387,6 +398,7 @@ main {
   display: block;
   font-size: 18px;
   margin-top: 4px;
+  line-height: 1.4;
 }
 
 .verdict-right {
@@ -427,6 +439,12 @@ main {
 
 .agent-name {
   font-weight: 700;
+}
+
+.agent-note {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 4px;
 }
 
 .agent-score {
