@@ -1,5 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import type { LiveRound } from '../types';
-import { formatDelta, formatPrice, statusLabel } from '../utils/format';
+import { getLocale } from '../i18n';
+import { formatDelta, formatPrice } from '../utils/format';
+import { statusLabel } from '../utils/labels';
 import { JudgmentRow } from './JudgmentRow';
 
 export type LivePanelProps = {
@@ -8,34 +11,37 @@ export type LivePanelProps = {
 };
 
 export function LivePanel({ live, countdown }: LivePanelProps) {
+  const { t, i18n } = useTranslation();
+  const locale = getLocale(i18n.language);
+
   if (!live) {
     return (
       <section className="section" id="live">
         <div className="section-head">
-          <h2>已宣判，尚未行刑</h2>
-          <span className="meta">案号 --</span>
+          <h2>{t('live.sectionTitle')}</h2>
+          <span className="meta">{t('live.caseId', { id: '--' })}</span>
         </div>
 
         <div className="live-grid">
           <div className="tile timer">
-            <span className="label">市场正在磨刀：</span>
+            <span className="label">{t('live.timerLabel')}</span>
             <span className="value">--:--</span>
-            <span className="hint">执行倒计时</span>
+            <span className="hint">{t('live.timerHint')}</span>
           </div>
           <div className="tile price">
-            <span className="label">行刑标的价格</span>
+            <span className="label">{t('live.priceLabel')}</span>
             <span className="value">--</span>
-            <span className="hint">起始价：--（不可撤销）</span>
+            <span className="hint">{t('live.priceHint', { price: '--' })}</span>
           </div>
           <div className="tile status">
-            <span className="label">判词已锁死</span>
+            <span className="label">{t('live.statusLabel')}</span>
             <span className="value">--</span>
-            <span className="hint">本局无悔改机会 · 30 分钟</span>
+            <span className="hint">{t('live.statusHint', { minutes: 30 })}</span>
           </div>
           <div className="tile swing">
-            <span className="label">偏离判词</span>
+            <span className="label">{t('live.swingLabel')}</span>
             <span className="value">--</span>
-            <span className="hint">当前偏差</span>
+            <span className="hint">{t('live.swingHint')}</span>
           </div>
         </div>
 
@@ -54,34 +60,34 @@ export function LivePanel({ live, countdown }: LivePanelProps) {
   return (
     <section className="section" id="live">
       <div className="section-head">
-        <h2>已宣判，尚未行刑</h2>
-        <span className="meta">案号 {live.round_id}</span>
+        <h2>{t('live.sectionTitle')}</h2>
+        <span className="meta">{t('live.caseId', { id: live.round_id })}</span>
       </div>
 
       <div className="live-grid">
         <div className="tile timer">
-          <span className="label">市场正在磨刀：</span>
+          <span className="label">{t('live.timerLabel')}</span>
           <span className="value">{countdown}</span>
-          <span className="hint">执行倒计时</span>
+          <span className="hint">{t('live.timerHint')}</span>
         </div>
         <div className="tile price">
-          <span className="label">行刑标的价格</span>
-          <span className="value">{formatPrice(live.current_price)}</span>
+          <span className="label">{t('live.priceLabel')}</span>
+          <span className="value">{formatPrice(live.current_price, locale)}</span>
           <span className="hint">
-            起始价：{formatPrice(live.start_price)}（不可撤销）
+            {t('live.priceHint', { price: formatPrice(live.start_price, locale) })}
           </span>
         </div>
         <div className="tile status">
-          <span className="label">判词已锁死</span>
-          <span className="value">{statusLabel(live.status)}</span>
-          <span className="hint">本局无悔改机会 · {live.duration_min} 分钟</span>
+          <span className="label">{t('live.statusLabel')}</span>
+          <span className="value">{statusLabel(live.status, t)}</span>
+          <span className="hint">{t('live.statusHint', { minutes: live.duration_min })}</span>
         </div>
         <div className="tile swing">
-          <span className="label">偏离判词</span>
+          <span className="label">{t('live.swingLabel')}</span>
           <span className={`value ${isPositive ? 'positive' : ''} ${isNegative ? 'negative' : ''}`}>
-            {delta === null ? '--' : `当前偏差：${formatDelta(delta, 2)}`}
+            {delta === null ? '--' : t('live.swingValue', { delta: formatDelta(delta, 2) })}
           </span>
-          <span className="hint">{delta === null ? '当前偏差' : ''}</span>
+          <span className="hint">{delta === null ? t('live.swingHint') : ''}</span>
         </div>
       </div>
 

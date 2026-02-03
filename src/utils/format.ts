@@ -1,27 +1,6 @@
-export const directionWord = (dir?: string) => {
-  if (dir === 'UP') return '上涨';
-  if (dir === 'DOWN') return '下跌';
-  return '横盘';
-};
-
-export const judgmentLabel = (agentId: string, direction: string) => {
-  const word = directionWord(direction);
-  if (agentId === 'bull_v1') return `断言${word}`;
-  if (agentId === 'bear_v1') return `宣判${word}`;
-  if (agentId === 'chaos_v1') return `强行站队${word}`;
-  return `立场${word}`;
-};
-
-export const statusLabel = (status?: string | null) => {
-  if (status === 'locked') return '锁死';
-  if (status === 'betting') return '封盘';
-  if (status === 'settled') return '结案';
-  return status || '--';
-};
-
-export const formatPrice = (price?: number | null) => {
+export const formatPrice = (price: number | null | undefined, locale: string) => {
   if (typeof price !== 'number') return '--';
-  return price.toLocaleString('en-US', {
+  return price.toLocaleString(locale, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
@@ -31,6 +10,11 @@ export const formatDelta = (value?: number | null, digits = 1) => {
   if (typeof value !== 'number' || Number.isNaN(value)) return '--';
   const sign = value > 0 ? '+' : '';
   return `${sign}${value.toFixed(digits)}%`;
+};
+
+export const formatTime = (value: string | number | null | undefined, locale: string) => {
+  const time = value ? new Date(value) : new Date();
+  return time.toLocaleTimeString(locale, { hour12: false });
 };
 
 export const formatCountdown = (ms: number) => {

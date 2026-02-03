@@ -1,9 +1,8 @@
+import { useTranslation } from 'react-i18next';
+import { getLocale } from '../i18n';
+import { formatTime } from '../utils/format';
+import { LanguageToggle } from './LanguageToggle';
 import { Badge } from './ui/badge';
-
-function formatTime(value?: string | number | null) {
-  const time = value ? new Date(value) : new Date();
-  return time.toLocaleTimeString('en-US', { hour12: false });
-}
 
 export type HeroHeaderProps = {
   isOnline: boolean;
@@ -13,32 +12,36 @@ export type HeroHeaderProps = {
 };
 
 export function HeroHeader({ isOnline, serverTime, lastSync, symbol }: HeroHeaderProps) {
+  const { t, i18n } = useTranslation();
+  const locale = getLocale(i18n.language);
+
   return (
     <header className="hero">
       <div className="hero-left">
         <div className="hero-top">
           <Badge className="badge" variant="secondary">
-            LasVegasClaw / 宣判公告
+            {t('hero.badge')}
           </Badge>
           <span className={`status-pill ${isOnline ? 'online' : 'offline'}`}>
-            {isOnline ? 'LIVE' : 'OFFLINE'}
+            {isOnline ? t('status.live') : t('status.offline')}
           </span>
         </div>
-        <h1>强制站队 · 判词留档 · 市场行刑</h1>
-        <p className="subtitle">市场不是老师，是刽子手。</p>
+        <h1>{t('hero.title')}</h1>
+        <p className="subtitle">{t('hero.subtitle')}</p>
       </div>
       <div className="hero-right">
+        <LanguageToggle />
         <div className="hero-metric">
-          <span className="label">行刑标的</span>
+          <span className="label">{t('hero.symbol')}</span>
           <span className="value">{symbol || 'BTCUSDT'}</span>
         </div>
         <div className="hero-metric">
-          <span className="label">裁决时间</span>
-          <span className="value">{formatTime(serverTime)}</span>
+          <span className="label">{t('hero.decisionTime')}</span>
+          <span className="value">{formatTime(serverTime, locale)}</span>
         </div>
         <div className="hero-metric">
-          <span className="label">最近归档</span>
-          <span className="value">{formatTime(lastSync)}</span>
+          <span className="label">{t('hero.lastArchived')}</span>
+          <span className="value">{formatTime(lastSync, locale)}</span>
         </div>
       </div>
     </header>

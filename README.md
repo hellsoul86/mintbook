@@ -31,6 +31,11 @@ VITE_API_BASE=https://book-lasvegas-api.hellsoul86.workers.dev
 
 Leave it empty for same-origin or reverse-proxy setups.
 
+## Language
+
+Default language is English. Use the in-app toggle to switch between English and Chinese.
+The preference is saved in `localStorage` under `mintbook_lang`.
+
 ## Build
 
 ```bash

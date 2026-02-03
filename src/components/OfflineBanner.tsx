@@ -1,7 +1,10 @@
+import { useTranslation } from 'react-i18next';
+
 export function OfflineBanner({ show }: { show: boolean }) {
+  const { t } = useTranslation();
   return (
     <div className="offline-banner" style={{ display: show ? 'flex' : 'none' }}>
-      断线，展示旧案
+      {t('offline.banner')}
     </div>
   );
 }

@@ -1,15 +1,19 @@
+import { useTranslation } from 'react-i18next';
 import type { Agent } from '../types';
+import { localizeAgent } from '../utils/localize';
 
 export function AgentsList({ agents }: { agents: Agent[] }) {
+  const { t, i18n } = useTranslation();
+
   if (!agents || agents.length === 0) {
     return (
       <section className="section" id="agents">
         <div className="section-head">
-          <h2>判断力清算榜</h2>
-          <span className="meta">分数越低越该被记档</span>
+          <h2>{t('agents.sectionTitle')}</h2>
+          <span className="meta">{t('agents.sectionMeta')}</span>
         </div>
         <div className="agent-list">
-          <div className="agent-row">暂无数据</div>
+          <div className="agent-row">{t('agents.empty')}</div>
         </div>
       </section>
     );
@@ -20,28 +24,31 @@ export function AgentsList({ agents }: { agents: Agent[] }) {
   return (
     <section className="section" id="agents">
       <div className="section-head">
-        <h2>判断力清算榜</h2>
-        <span className="meta">分数越低越该被记档</span>
+        <h2>{t('agents.sectionTitle')}</h2>
+        <span className="meta">{t('agents.sectionMeta')}</span>
       </div>
       <div className="agent-list">
         {agents.map((agent, index) => {
-          const isLowest = agent.score === lowestScore;
+          const localized = localizeAgent(agent, i18n.language, t);
+          const isLowest = localized.score === lowestScore;
           const skull = isLowest ? '💀' : '';
-          const note = `最近 5 局：${agent.recent_high_conf_failures || 0} 次高置信失败`;
+          const note = t('agents.note', {
+            count: localized.recent_high_conf_failures || 0,
+          });
           return (
             <div
-              key={agent.id}
+              key={localized.id}
               className={`agent-row ${isLowest ? 'lowest' : ''}`}
             >
               <div className="agent-rank">{index + 1}</div>
               <div>
                 <div className="agent-name">
-                  {agent.name} {skull}
+                  {localized.name} {skull}
                 </div>
-                <div className="meta">{agent.persona}</div>
+                <div className="meta">{localized.persona}</div>
                 <div className="agent-note">{note}</div>
               </div>
-              <div className="agent-score">{agent.score}</div>
+              <div className="agent-score">{localized.score}</div>
             </div>
           );
         })}

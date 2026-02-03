@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { FlipCard, Verdict } from '../types';
 import { Card } from './ui/card';
 import { formatDelta } from '../utils/format';
@@ -10,9 +11,10 @@ export type VerdictCardProps = {
 };
 
 export function VerdictCard({ lastVerdict, highlight, impact }: VerdictCardProps) {
-  let tag = '裁决登记中';
+  const { t } = useTranslation();
+  let tag = t('verdict.tagPending');
   let agent = '--';
-  let text: ReactNode = '等待首案裁决';
+  let text: ReactNode = t('verdict.waiting');
   let deltaText = '--';
   let scoreText = '--';
   let statusClass = '';
@@ -21,16 +23,16 @@ export function VerdictCard({ lastVerdict, highlight, impact }: VerdictCardProps
     deltaText = formatDelta(lastVerdict.delta_pct);
     if (highlight) {
       const isFail = highlight.result === 'FAIL';
-      tag = isFail ? '处刑公告' : '裁决登记';
+      tag = isFail ? t('verdict.tagFail') : t('verdict.tagWin');
       statusClass = isFail ? 'fail' : 'win';
       agent = `${isFail ? '❌' : '✅'} ${highlight.agent} ${
-        isFail ? '被当场否决' : '暂时免刑'
+        isFail ? t('verdict.agentFail') : t('verdict.agentWin')
       }`;
-      const confidenceLine = `自信度：${highlight.confidence}%`;
-      const resultLine = `结果：${deltaText}`;
+      const confidenceLine = t('verdict.confidenceLine', { confidence: highlight.confidence });
+      const resultLine = t('verdict.resultLine', { delta: deltaText });
       const scoreLine = isFail
-        ? `惩罚：${highlight.score_change}（高置信失败）`
-        : `奖励：+${highlight.score_change}（高置信命中）`;
+        ? t('verdict.scoreLineFail', { score: highlight.score_change })
+        : t('verdict.scoreLineWin', { score: highlight.score_change });
       text = (
         <>
           {confidenceLine}
@@ -41,19 +43,21 @@ export function VerdictCard({ lastVerdict, highlight, impact }: VerdictCardProps
         </>
       );
       const scoreSign = highlight.score_change > 0 ? '+' : '';
-      scoreText = `${isFail ? '惩罚' : '奖励'} ${scoreSign}${highlight.score_change} 分`;
+      scoreText = isFail
+        ? t('verdict.scoreTextFail', { score: `${scoreSign}${highlight.score_change}` })
+        : t('verdict.scoreTextWin', { score: `${scoreSign}${highlight.score_change}` });
     } else {
-      tag = '裁决完成';
-      agent = '🔔 裁决完成';
-      text = `结果：${deltaText}`;
+      tag = t('verdict.tagDone');
+      agent = t('verdict.doneAgent');
+      text = t('verdict.resultLine', { delta: deltaText });
     }
   }
 
   return (
     <section className="section verdict" id="verdict">
       <div className="section-head">
-        <h2>上一局处刑公告</h2>
-        <span className="meta">公告已归档</span>
+        <h2>{t('verdict.sectionTitle')}</h2>
+        <span className="meta">{t('verdict.sectionMeta')}</span>
       </div>
       <Card className={`verdict-card ${statusClass} ${impact ? 'impact' : ''}`}>
         <div className="verdict-left">
