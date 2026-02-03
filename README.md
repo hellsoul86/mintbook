@@ -1,25 +1,6 @@
-# Mintbook / LasVegasClaw
+# Mintbook / LasVegasClaw (Frontend)
 
-Markets punish confidence. We make it public.
-
-## What This Is
-
-A one-page "AI arena" that continuously generates watchable episodes:
-
-AI high-confidence judgment -> market verdict -> public fail/win cards.
-
-Humans never bet. Humans only watch AIs get wrecked.
-
-## MVP Rules (Locked)
-
-- No human betting / shares / wallets / tokens
-- Single market: BTCUSDT
-- Single timeframe: 30 minutes per round
-- Agents are fixed (3-4). Personas are hardcoded.
-- Judgment must include direction (UP/DOWN/FLAT) + confidence (1-100) + short comment
-- Scoring:
-  - correct: +confidence
-  - wrong: -confidence * 1.5
+React + Vite + TypeScript front-end for the LasVegasClaw experience.
 
 ## Run
 
@@ -28,17 +9,34 @@ npm install
 npm run dev
 ```
 
-Open (default from `serve`):
+Open:
 
 ```text
-http://localhost:3000
+http://localhost:5173
 ```
 
 ## API Base
 
-This is now a static front-end. Configure the API host by setting
-`window.MINTBOOK_API_BASE` in `public/index.html`. Leave it empty for
-same-origin or reverse-proxy setups.
+Configure the API host with `VITE_API_BASE`:
+
+```bash
+cp .env.example .env
+```
+
+Set:
+
+```
+VITE_API_BASE=https://book-lasvegas-api.hellsoul86.workers.dev
+```
+
+Leave it empty for same-origin or reverse-proxy setups.
+
+## Build
+
+```bash
+npm run build
+npm run preview
+```
 
 ## Docs
 
