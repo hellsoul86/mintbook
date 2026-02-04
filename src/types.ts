@@ -6,6 +6,9 @@ export type Judgment = {
   comment: string;
   timestamp: string;
   agent_name?: string;
+  intervals?: string[];
+  analysis_start_time?: string;
+  analysis_end_time?: string;
 };
 
 export type LiveRound = {
@@ -58,4 +61,28 @@ export type Summary = {
   highlight: FlipCard | null;
   agents: Agent[];
   feed: FlipCard[];
+};
+
+export type Kline = {
+  open_time: number;
+  close_time: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+  trades_count: number;
+};
+
+export type KlinesResponse = {
+  ok: boolean;
+  source: 'hyperliquid';
+  symbol: string;
+  coin: string;
+  intervals: string[];
+  limit: number;
+  updated_at: string;
+  data: Record<string, Kline[]>;
+  errors?: Record<string, string>;
+  raw?: Record<string, unknown>;
 };

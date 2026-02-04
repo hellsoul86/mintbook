@@ -1,6 +1,6 @@
-# Mintbook / LasVegasClaw (Frontend)
+# Mintbook / BullBear Brief (Frontend)
 
-React + Vite + TypeScript front-end for the LasVegasClaw experience.
+React + Vite + TypeScript front-end for the BullBear Brief experience (bull/bear reasons and live comparisons).
 
 ## Run
 
