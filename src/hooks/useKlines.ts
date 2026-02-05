@@ -5,8 +5,8 @@ import type { Kline } from '../types';
 export type UseKlinesArgs = {
   symbol: string;
   interval: string;
-  startTimeMs: number;
-  endTimeMs: number;
+  startTimeMs?: number;
+  endTimeMs?: number;
   limit: number;
   refreshMs?: number;
 };
@@ -22,8 +22,8 @@ export function useKlines(args: UseKlinesArgs) {
     return [
       args.symbol,
       args.interval,
-      args.startTimeMs,
-      args.endTimeMs,
+      args.startTimeMs ?? 'none',
+      args.endTimeMs ?? 'none',
       args.limit,
     ].join('|');
   }, [args.symbol, args.interval, args.startTimeMs, args.endTimeMs, args.limit]);

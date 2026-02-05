@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { Judgment, LiveRound } from '../types';
 import { getLocale } from '../i18n';
 import { formatPrice } from '../utils/format';
-import { computeLimit, SUPPORTED_INTERVALS } from '../utils/intervals';
+import { intervalToMs, SUPPORTED_INTERVALS } from '../utils/intervals';
 import { formatRange } from '../utils/time';
 import { useKlines } from '../hooks/useKlines';
 import { KlineChart } from './KlineChart';
@@ -24,6 +24,7 @@ function parseIsoMs(value: string | null | undefined): number | null {
 export function MarketPanel({ live, selected, selectedInterval, onIntervalChange }: MarketPanelProps) {
   const { t, i18n } = useTranslation();
   const locale = getLocale(i18n.language);
+  const chartLimit = 200;
 
   const symbol = live?.symbol ?? 'BTCUSDT';
 
@@ -38,15 +39,24 @@ export function MarketPanel({ live, selected, selectedInterval, onIntervalChange
     return { startMs, endMs, source: 'default' as const };
   }, [selected?.analysis_start_time, selected?.analysis_end_time]);
 
-  const rangeMs = range.endMs - range.startMs;
-  const limit = computeLimit(rangeMs, selectedInterval);
+  const intervalMs = intervalToMs(selectedInterval);
+  const alignedEndMs = Math.floor(range.endMs / intervalMs) * intervalMs;
+  const chartRange = {
+    endMs: alignedEndMs,
+    startMs: alignedEndMs - intervalMs * chartLimit,
+  };
+  const chartRangeText = formatRange(
+    new Date(chartRange.startMs).toISOString(),
+    new Date(chartRange.endMs).toISOString(),
+    locale
+  );
 
   const klines = useKlines({
     symbol,
     interval: selectedInterval,
-    startTimeMs: range.startMs,
-    endTimeMs: range.endMs,
-    limit,
+    startTimeMs: chartRange.startMs,
+    endTimeMs: chartRange.endMs,
+    limit: chartLimit,
     refreshMs: 15_000,
   });
 
@@ -132,9 +142,14 @@ export function MarketPanel({ live, selected, selectedInterval, onIntervalChange
         </div>
 
         <div className="market-foot-row">
+          <div className="label">{t('market.chartRangeLabel')}</div>
+          <div className="value">{chartRangeText}</div>
+        </div>
+
+        <div className="market-foot-row">
           <div className="label">{t('market.limitLabel')}</div>
           <div className="value">
-            {t('market.limitValue', { limit })}{' '}
+            {t('market.limitValue', { limit: chartLimit })}{' '}
             <span className="muted">{t('market.truncateHint')}</span>
           </div>
         </div>

@@ -4,6 +4,9 @@ import { HeroHeader } from './components/HeroHeader';
 import { OfflineBanner } from './components/OfflineBanner';
 import { MarketPanel } from './components/MarketPanel';
 import { ReasonsPanel } from './components/ReasonsPanel';
+import { StatsPanel } from './components/StatsPanel';
+import { Tabs } from './components/Tabs';
+import { useReasonStats } from './hooks/useReasonStats';
 import { useSummary } from './hooks/useSummary';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -11,7 +14,18 @@ import { pickBestIntervalForRange, SUPPORTED_INTERVALS } from './utils/intervals
 
 export function App() {
   const { summary, isOnline, lastSync } = useSummary();
+  const reasonStats = useReasonStats();
   const { t, i18n } = useTranslation();
+
+  const [activeTab, setActiveTab] = useState<'analysis' | 'rankings'>(() => {
+    try {
+      const raw = localStorage.getItem('mintbook_tab') || 'analysis';
+      if (raw === 'analysis' || raw === 'rankings') return raw;
+      return 'analysis';
+    } catch {
+      return 'analysis';
+    }
+  });
 
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
   const [selectionMode, setSelectionMode] = useState<'auto' | 'manual'>('auto');
@@ -30,6 +44,14 @@ export function App() {
     document.title = t('app.title');
     document.documentElement.lang = i18n.language.startsWith('zh') ? 'zh' : 'en';
   }, [t, i18n.language]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('mintbook_tab', activeTab);
+    } catch {
+      // ignore
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     try {
@@ -111,6 +133,46 @@ export function App() {
     setSelectedAgentId(id);
   };
 
+  const tabs = [
+    {
+      id: 'analysis',
+      label: t('tabs.analysis'),
+      content: (
+        <div className="stack">
+          <StatsPanel
+            stats={reasonStats.stats}
+            isLoading={reasonStats.isLoading}
+            error={reasonStats.error}
+            updatedAt={reasonStats.updatedAt}
+          />
+          <div className="dashboard-grid">
+            <MarketPanel
+              live={live}
+              selected={selected}
+              selectedInterval={selectedInterval}
+              onIntervalChange={setSelectedInterval}
+            />
+            <ReasonsPanel
+              judgments={judgments}
+              selectedAgentId={selectedAgentId}
+              onSelectAgentId={handleSelectAgentId}
+            />
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'rankings',
+      label: t('tabs.rankings'),
+      content: (
+        <div className="stack">
+          <AgentsList agents={summary?.agents ?? []} />
+          <FeedList feed={summary?.feed ?? []} />
+        </div>
+      ),
+    },
+  ] as const;
+
   return (
     <div className="page">
       <div className="motto">{t('app.motto')}</div>
@@ -122,21 +184,7 @@ export function App() {
       />
       <OfflineBanner show={!isOnline} />
       <main>
-        <div className="dashboard-grid">
-          <MarketPanel
-            live={live}
-            selected={selected}
-            selectedInterval={selectedInterval}
-            onIntervalChange={setSelectedInterval}
-          />
-          <ReasonsPanel
-            judgments={judgments}
-            selectedAgentId={selectedAgentId}
-            onSelectAgentId={handleSelectAgentId}
-          />
-        </div>
-        <AgentsList agents={summary?.agents ?? []} />
-        <FeedList feed={summary?.feed ?? []} />
+        <Tabs items={tabs} activeId={activeTab} onChange={setActiveTab} />
       </main>
     </div>
   );

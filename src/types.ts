@@ -86,3 +86,26 @@ export type KlinesResponse = {
   errors?: Record<string, string>;
   raw?: Record<string, unknown>;
 };
+
+export type ReasonStatsRow = {
+  total_evaluated: number;
+  total_valid: number;
+  accuracy_all: number;
+  accuracy_valid: number;
+};
+
+export type ReasonStatsResponse = {
+  ok: true;
+  scope: 'global' | 'agent';
+  agent_id?: string;
+  since: string;
+  until: string;
+  total_evaluated: number;
+  total_valid: number;
+  accuracy_all: number;
+  accuracy_valid: number;
+  avg_delta_pct: number;
+  avg_abs_delta_pct: number;
+  by_timeframe: Array<ReasonStatsRow & { timeframe: string }>;
+  by_pattern: Array<ReasonStatsRow & { pattern: string }>;
+};
